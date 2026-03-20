@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lightweight repository validation for Phase 0, Phase 1, and Phase 2 artifacts."""
+"""Lightweight repository validation for Phase 0 through Phase 3 artifacts."""
 
 from __future__ import annotations
 
@@ -10,14 +10,18 @@ REQUIRED_FILES = [
     Path("docs/multimodal-generation-pipelines-phase-0-foundation.md"),
     Path("docs/multimodal-generation-pipelines-phase-1-ingestion-extraction.md"),
     Path("docs/multimodal-generation-pipelines-phase-2-cir-indexing.md"),
+    Path("docs/multimodal-generation-pipelines-phase-3-retrieval-grounded-generation.md"),
     Path("docs/api/ingestion-and-processing.openapi.yaml"),
     Path("docs/api/cir-and-indexing.openapi.yaml"),
+    Path("docs/api/retrieval-and-generation.openapi.yaml"),
     Path("docs/schemas/cir.schema.json"),
     Path("docs/schemas/grounded-summary.schema.json"),
     Path("docs/schemas/processing-job.schema.json"),
     Path("docs/schemas/extraction-bundle.schema.json"),
     Path("docs/schemas/index-record.schema.json"),
     Path("docs/schemas/indexing-run.schema.json"),
+    Path("docs/schemas/retrieval-request.schema.json"),
+    Path("docs/schemas/retrieval-evidence-pack.schema.json"),
     Path("data/sample-corpora/README.md"),
     Path("AGENTS.md"),
 ]
@@ -29,6 +33,8 @@ JSON_FILES = [
     Path("docs/schemas/extraction-bundle.schema.json"),
     Path("docs/schemas/index-record.schema.json"),
     Path("docs/schemas/indexing-run.schema.json"),
+    Path("docs/schemas/retrieval-request.schema.json"),
+    Path("docs/schemas/retrieval-evidence-pack.schema.json"),
 ]
 
 OPENAPI_MARKERS = {
@@ -46,6 +52,12 @@ OPENAPI_MARKERS = {
         "/v1/indexing-runs:",
         "/v1/indexing-runs/{indexing_run_id}:",
         "/v1/assets/{asset_id}/index-records:",
+    ],
+    Path("docs/api/retrieval-and-generation.openapi.yaml"): [
+        "openapi: 3.1.0",
+        "/v1/grounded-summaries:",
+        "/v1/grounded-summaries/{summary_request_id}:",
+        "/v1/grounded-summaries/{summary_request_id}/evidence:",
     ],
 }
 
@@ -73,7 +85,7 @@ def main() -> int:
             return 1
         print(f"Validated OpenAPI contract markers: {openapi_path}")
 
-    print("Phase 0, Phase 1, and Phase 2 validation checks passed.")
+    print("Phase 0 through Phase 3 validation checks passed.")
     return 0
 
 

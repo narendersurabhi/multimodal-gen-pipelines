@@ -1,4 +1,4 @@
-name: Repository Validation
+name: Repository Artifact Validation
 
 on:
   push:
