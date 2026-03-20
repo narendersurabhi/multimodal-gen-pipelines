@@ -1,0 +1,191 @@
+openapi: 3.1.0
+info:
+  title: Multimodal Generation Pipelines Ingestion and Processing API
+  version: 0.1.0
+  summary: MVP contract for Phase 1 asset ingestion and asynchronous extraction processing.
+servers:
+  - url: https://api.example.com
+paths:
+  /v1/assets:ingest:
+    post:
+      summary: Create an asset and enqueue extraction processing.
+      operationId: ingestAsset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IngestAssetRequest'
+      responses:
+        '202':
+          description: Asset accepted and job queued.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngestAssetResponse'
+  /v1/jobs/{job_id}:
+    get:
+      summary: Fetch processing job status.
+      operationId: getProcessingJob
+      parameters:
+        - $ref: '#/components/parameters/JobId'
+      responses:
+        '200':
+          description: Current processing job state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessingJob'
+  /v1/jobs/{job_id}:retry:
+    post:
+      summary: Retry a failed or partially successful processing job.
+      operationId: retryProcessingJob
+      parameters:
+        - $ref: '#/components/parameters/JobId'
+      responses:
+        '202':
+          description: Retry accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetryJobResponse'
+  /v1/assets/{asset_id}/artifacts/extraction:
+    get:
+      summary: Fetch the normalized extraction bundle for an asset.
+      operationId: getExtractionBundle
+      parameters:
+        - $ref: '#/components/parameters/AssetId'
+      responses:
+        '200':
+          description: Extraction bundle payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtractionBundle'
+components:
+  parameters:
+    AssetId:
+      name: asset_id
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '^asset_[a-zA-Z0-9]+$'
+    JobId:
+      name: job_id
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '^job_[a-zA-Z0-9]+$'
+  schemas:
+    IngestAssetRequest:
+      type: object
+      required:
+        - tenant_id
+        - source_type
+        - asset
+      properties:
+        tenant_id:
+          type: string
+        source_type:
+          type: string
+          enum:
+            - inline_text
+            - file_upload
+            - external_uri
+        asset:
+          oneOf:
+            - $ref: '#/components/schemas/InlineTextAsset'
+            - $ref: '#/components/schemas/FileAsset'
+            - $ref: '#/components/schemas/ExternalUriAsset'
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+    InlineTextAsset:
+      type: object
+      required:
+        - text
+      properties:
+        mime_type:
+          type: string
+          const: text/plain
+        text:
+          type: string
+          minLength: 1
+    FileAsset:
+      type: object
+      required:
+        - file_name
+        - mime_type
+        - content_base64
+      properties:
+        file_name:
+          type: string
+        mime_type:
+          type: string
+          enum:
+            - application/pdf
+            - image/png
+            - image/jpeg
+            - image/webp
+        content_base64:
+          type: string
+          contentEncoding: base64
+    ExternalUriAsset:
+      type: object
+      required:
+        - uri
+        - mime_type
+      properties:
+        uri:
+          type: string
+          format: uri
+        mime_type:
+          type: string
+    IngestAssetResponse:
+      type: object
+      required:
+        - asset_id
+        - job_id
+        - status
+      properties:
+        asset_id:
+          type: string
+        job_id:
+          type: string
+        status:
+          type: string
+          const: accepted
+        links:
+          type: object
+          required:
+            - job
+            - extraction_bundle
+          properties:
+            job:
+              type: string
+              format: uri-reference
+            extraction_bundle:
+              type: string
+              format: uri-reference
+    RetryJobResponse:
+      type: object
+      required:
+        - job_id
+        - retry_attempt
+        - status
+      properties:
+        job_id:
+          type: string
+        retry_attempt:
+          type: integer
+          minimum: 1
+        status:
+          type: string
+          const: accepted
+    ProcessingJob:
+      $ref: '../schemas/processing-job.schema.json'
+    ExtractionBundle:
+      $ref: '../schemas/extraction-bundle.schema.json'
