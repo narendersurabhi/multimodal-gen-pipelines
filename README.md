@@ -85,16 +85,6 @@ The implementation plan breaks delivery into clear phases:
 5. **Operational hardening** — dashboards, controls, risk handling, and SLAs
 6. **Advanced multimodal workflows** — creative generation and richer retrieval experiences
 
-## Skills Demonstrated
-
-- Multimodal AI architecture design
-- Retrieval-augmented generation (RAG)
-- Embeddings and vector search design
-- Document AI pipeline design
-- Prompt orchestration and schema-constrained outputs
-- Platform thinking: storage, orchestration, observability, governance
-- Delivery planning from architecture to phased implementation
-
 ## Suggested Reading Order
 
 If you are reviewing this repository quickly:
@@ -102,13 +92,3 @@ If you are reviewing this repository quickly:
 2. Open `docs/multimodal-generation-pipelines-architecture.md`
 3. Review `docs/multimodal-generation-pipelines-implementation-plan.md`
 4. Check `AGENTS.md` for the latest repository status
-
-## Recruiter / Hiring Manager Notes
-
-This repository is intentionally documentation-first. It is meant to showcase:
-- system design depth
-- practical understanding of multimodal AI workflows
-- ability to translate architecture into an implementation roadmap
-- awareness of production concerns beyond model prompting alone
-
-If helpful, this project can be discussed as a case study for designing AI systems that bridge **LLMs, vision models, document AI, retrieval, and creative generation workflows**.
