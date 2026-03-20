@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/indexing-run.schema.json",
+  "title": "Indexing Run",
+  "description": "Administrative record for initial indexing, re-index, and backfill execution.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "indexing_run_id",
+    "mode",
+    "status",
+    "scope",
+    "configuration",
+    "counters",
+    "timestamps"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "indexing_run_id": {
+      "type": "string",
+      "pattern": "^irun_[A-Za-z0-9_-]+$"
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["initial", "backfill", "reindex"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["queued", "running", "succeeded", "partial_success", "failed", "cancelled"]
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["selection_type"],
+      "properties": {
+        "selection_type": {
+          "type": "string",
+          "enum": ["tenant", "asset_list", "filter"]
+        },
+        "tenant_id": {
+          "type": ["string", "null"]
+        },
+        "asset_ids": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        },
+        "filter_expression": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["embedding_provider", "embedding_model", "index_namespace"],
+      "properties": {
+        "embedding_provider": {
+          "type": "string"
+        },
+        "embedding_model": {
+          "type": "string"
+        },
+        "index_namespace": {
+          "type": "string"
+        },
+        "skip_low_confidence": {
+          "type": "boolean",
+          "default": false
+        },
+        "target_cir_version": {
+          "type": "string"
+        }
+      }
+    },
+    "counters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assets_seen", "assets_indexed", "records_written", "records_failed"],
+      "properties": {
+        "assets_seen": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "assets_indexed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "records_written": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "records_failed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "records_skipped": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "failure_summary": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "count"],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sample_asset_ids": {
+            "type": "array",
+            "items": { "type": "string" },
+            "default": []
+          }
+        }
+      },
+      "default": []
+    },
+    "timestamps": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["created_at"],
+      "properties": {
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "started_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "completed_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

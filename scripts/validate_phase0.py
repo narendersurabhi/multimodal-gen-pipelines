@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lightweight repository validation for Phase 0 and Phase 1 artifacts."""
+"""Lightweight repository validation for Phase 0, Phase 1, and Phase 2 artifacts."""
 
 from __future__ import annotations
 
@@ -9,11 +9,15 @@ from pathlib import Path
 REQUIRED_FILES = [
     Path("docs/multimodal-generation-pipelines-phase-0-foundation.md"),
     Path("docs/multimodal-generation-pipelines-phase-1-ingestion-extraction.md"),
+    Path("docs/multimodal-generation-pipelines-phase-2-cir-indexing.md"),
     Path("docs/api/ingestion-and-processing.openapi.yaml"),
+    Path("docs/api/cir-and-indexing.openapi.yaml"),
     Path("docs/schemas/cir.schema.json"),
     Path("docs/schemas/grounded-summary.schema.json"),
     Path("docs/schemas/processing-job.schema.json"),
     Path("docs/schemas/extraction-bundle.schema.json"),
+    Path("docs/schemas/index-record.schema.json"),
+    Path("docs/schemas/indexing-run.schema.json"),
     Path("data/sample-corpora/README.md"),
     Path("AGENTS.md"),
 ]
@@ -23,15 +27,27 @@ JSON_FILES = [
     Path("docs/schemas/grounded-summary.schema.json"),
     Path("docs/schemas/processing-job.schema.json"),
     Path("docs/schemas/extraction-bundle.schema.json"),
+    Path("docs/schemas/index-record.schema.json"),
+    Path("docs/schemas/indexing-run.schema.json"),
 ]
 
-OPENAPI_REQUIRED_SNIPPETS = [
-    "openapi: 3.1.0",
-    "/v1/assets:ingest:",
-    "/v1/jobs/{job_id}:",
-    "/v1/jobs/{job_id}:retry:",
-    "/v1/assets/{asset_id}/artifacts/extraction:",
-]
+OPENAPI_MARKERS = {
+    Path("docs/api/ingestion-and-processing.openapi.yaml"): [
+        "openapi: 3.1.0",
+        "/v1/assets:ingest:",
+        "/v1/jobs/{job_id}:",
+        "/v1/jobs/{job_id}:retry:",
+        "/v1/assets/{asset_id}/artifacts/extraction:",
+    ],
+    Path("docs/api/cir-and-indexing.openapi.yaml"): [
+        "openapi: 3.1.0",
+        "/v1/assets/{asset_id}:materialize-cir:",
+        "/v1/assets/{asset_id}/cir:",
+        "/v1/indexing-runs:",
+        "/v1/indexing-runs/{indexing_run_id}:",
+        "/v1/assets/{asset_id}/index-records:",
+    ],
+}
 
 
 def main() -> int:
@@ -47,17 +63,17 @@ def main() -> int:
             json.load(handle)
         print(f"Validated JSON: {schema_path}")
 
-    openapi_path = Path("docs/api/ingestion-and-processing.openapi.yaml")
-    openapi_text = openapi_path.read_text(encoding="utf-8")
-    missing_snippets = [snippet for snippet in OPENAPI_REQUIRED_SNIPPETS if snippet not in openapi_text]
-    if missing_snippets:
-        print(f"OpenAPI contract is missing required snippets in {openapi_path}:")
-        for snippet in missing_snippets:
-            print(f"- {snippet}")
-        return 1
+    for openapi_path, markers in OPENAPI_MARKERS.items():
+        openapi_text = openapi_path.read_text(encoding="utf-8")
+        missing_markers = [marker for marker in markers if marker not in openapi_text]
+        if missing_markers:
+            print(f"OpenAPI contract is missing required markers in {openapi_path}:")
+            for marker in missing_markers:
+                print(f"- {marker}")
+            return 1
+        print(f"Validated OpenAPI contract markers: {openapi_path}")
 
-    print(f"Validated OpenAPI contract markers: {openapi_path}")
-    print("Phase 0 and Phase 1 validation checks passed.")
+    print("Phase 0, Phase 1, and Phase 2 validation checks passed.")
     return 0
 
 

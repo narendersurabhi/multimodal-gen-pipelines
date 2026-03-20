@@ -40,8 +40,10 @@ Modern AI products increasingly need to work across multiple content types inste
 | `docs/multimodal-generation-pipelines-implementation-plan.md` | Phased implementation roadmap with MVP scope, milestones, risks, and success metrics |
 | `docs/multimodal-generation-pipelines-phase-0-foundation.md` | Concrete Phase 0 deliverables covering MVP workflows, dataset definition, schemas, and repository standards |
 | `docs/multimodal-generation-pipelines-phase-1-ingestion-extraction.md` | Phase 1 implementation brief covering ingestion APIs, job lifecycle, extraction outputs, and storage conventions |
+| `docs/multimodal-generation-pipelines-phase-2-cir-indexing.md` | Phase 2 implementation brief covering CIR materialization, embeddings, indexing runs, and backfill conventions |
 | `docs/api/ingestion-and-processing.openapi.yaml` | OpenAPI contract for upload, job status, retry, and extraction artifact endpoints |
-| `docs/schemas/` | Versioned JSON schema contracts for the CIR, grounded summary outputs, jobs, and extraction bundles |
+| `docs/api/cir-and-indexing.openapi.yaml` | Administrative OpenAPI contract for CIR materialization, indexing runs, and indexed record inspection |
+| `docs/schemas/` | Versioned JSON schema contracts for the CIR, grounded summary outputs, jobs, extraction bundles, index records, and indexing runs |
 | `data/sample-corpora/README.md` | Sample dataset inventory and evaluation coverage for the MVP corpus |
 | `AGENTS.md` | Repository context and running change log for future contributors/agents |
 
@@ -90,7 +92,7 @@ The implementation plan breaks delivery into clear phases:
 5. **Operational hardening** — dashboards, controls, risk handling, and SLAs
 6. **Advanced multimodal workflows** — creative generation and richer retrieval experiences
 
-Phase 0 is now represented directly in the repository through a foundation brief, schema definitions, a sample-corpus inventory, and a lightweight validation workflow. Phase 1 is now scaffolded through a concrete ingestion/extraction implementation brief, an OpenAPI contract, and versioned job/extraction schemas.
+Phase 0 is now represented directly in the repository through a foundation brief, schema definitions, a sample-corpus inventory, and a lightweight validation workflow. Phase 1 is now scaffolded through a concrete ingestion/extraction implementation brief, an OpenAPI contract, and versioned job/extraction schemas. Phase 2 is now documented through a CIR/indexing implementation brief, an administrative OpenAPI contract, and versioned index/search contracts for embeddings and backfills.
 
 ## Suggested Reading Order
 
@@ -98,5 +100,5 @@ If you are reviewing this repository quickly:
 1. Start with this `README.md`
 2. Open `docs/multimodal-generation-pipelines-architecture.md`
 3. Review `docs/multimodal-generation-pipelines-implementation-plan.md`
-4. Read `docs/multimodal-generation-pipelines-phase-0-foundation.md` and `docs/multimodal-generation-pipelines-phase-1-ingestion-extraction.md` for delivery-ready artifacts
+4. Read `docs/multimodal-generation-pipelines-phase-0-foundation.md`, `docs/multimodal-generation-pipelines-phase-1-ingestion-extraction.md`, and `docs/multimodal-generation-pipelines-phase-2-cir-indexing.md` for delivery-ready artifacts
 5. Check `AGENTS.md` for the latest repository status
