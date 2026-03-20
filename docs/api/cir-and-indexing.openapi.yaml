@@ -1,0 +1,197 @@
+openapi: 3.1.0
+info:
+  title: CIR and Indexing Administration API
+  version: 1.0.0
+  description: >-
+    Administrative API surface for Phase 2 CIR materialization, indexing runs,
+    and indexed record inspection.
+servers:
+  - url: https://api.example.com
+paths:
+  /v1/assets/{asset_id}:materialize-cir:
+    post:
+      summary: Materialize a CIR document for an asset.
+      operationId: materializeCir
+      parameters:
+        - $ref: '#/components/parameters/AssetId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                extraction_bundle_version:
+                  type: string
+                force_rebuild:
+                  type: boolean
+                  default: false
+      responses:
+        '202':
+          description: CIR materialization accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CirMaterializationAccepted'
+  /v1/assets/{asset_id}/cir:
+    get:
+      summary: Fetch the active CIR document for an asset.
+      operationId: getCir
+      parameters:
+        - $ref: '#/components/parameters/AssetId'
+      responses:
+        '200':
+          description: CIR document returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CirDocumentEnvelope'
+  /v1/indexing-runs:
+    post:
+      summary: Start an indexing, backfill, or re-index run.
+      operationId: createIndexingRun
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateIndexingRunRequest'
+      responses:
+        '202':
+          description: Indexing run accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndexingRunAccepted'
+  /v1/indexing-runs/{indexing_run_id}:
+    get:
+      summary: Return indexing run state and counters.
+      operationId: getIndexingRun
+      parameters:
+        - $ref: '#/components/parameters/IndexingRunId'
+      responses:
+        '200':
+          description: Indexing run returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndexingRun'
+  /v1/assets/{asset_id}/index-records:
+    get:
+      summary: List normalized index records for an asset.
+      operationId: listIndexRecords
+      parameters:
+        - $ref: '#/components/parameters/AssetId'
+      responses:
+        '200':
+          description: Index records returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                  - records
+                properties:
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/IndexRecord'
+components:
+  parameters:
+    AssetId:
+      name: asset_id
+      in: path
+      required: true
+      schema:
+        type: string
+    IndexingRunId:
+      name: indexing_run_id
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    CirMaterializationAccepted:
+      type: object
+      additionalProperties: false
+      required:
+        - asset_id
+        - cir_id
+        - status
+      properties:
+        asset_id:
+          type: string
+        cir_id:
+          type: string
+        status:
+          type: string
+          enum: [queued, running]
+    CirDocumentEnvelope:
+      type: object
+      additionalProperties: false
+      required:
+        - cir_uri
+        - cir
+      properties:
+        cir_uri:
+          type: string
+        cir:
+          $ref: '#/components/schemas/CirDocument'
+    CirDocument:
+      type: object
+      additionalProperties: true
+      description: See docs/schemas/cir.schema.json for the authoritative contract.
+    CreateIndexingRunRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - mode
+        - scope
+        - embedding_model
+      properties:
+        mode:
+          type: string
+          enum: [initial, backfill, reindex]
+        scope:
+          type: object
+          additionalProperties: false
+          properties:
+            tenant_id:
+              type: string
+            asset_ids:
+              type: array
+              items:
+                type: string
+            source_types:
+              type: array
+              items:
+                type: string
+        embedding_model:
+          type: string
+        index_namespace:
+          type: string
+        skip_low_confidence:
+          type: boolean
+          default: false
+    IndexingRunAccepted:
+      type: object
+      additionalProperties: false
+      required:
+        - indexing_run_id
+        - status
+      properties:
+        indexing_run_id:
+          type: string
+        status:
+          type: string
+          enum: [queued]
+    IndexingRun:
+      type: object
+      additionalProperties: true
+      description: See docs/schemas/indexing-run.schema.json for the authoritative contract.
+    IndexRecord:
+      type: object
+      additionalProperties: true
+      description: See docs/schemas/index-record.schema.json for the authoritative contract.

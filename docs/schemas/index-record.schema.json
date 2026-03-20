@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/index-record.schema.json",
+  "title": "Index Record",
+  "description": "Normalized searchable unit derived from a CIR document for vector and hybrid retrieval.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_id",
+    "asset_id",
+    "tenant_id",
+    "cir_id",
+    "content_type",
+    "content",
+    "embedding",
+    "filters",
+    "provenance",
+    "quality",
+    "timestamps"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "record_id": {
+      "type": "string",
+      "pattern": "^idx_[A-Za-z0-9_-]+$"
+    },
+    "asset_id": {
+      "type": "string"
+    },
+    "tenant_id": {
+      "type": "string"
+    },
+    "cir_id": {
+      "type": "string"
+    },
+    "content_type": {
+      "type": "string",
+      "enum": ["text_chunk", "caption", "table_summary", "figure_description", "page_summary"]
+    },
+    "content": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "source_ref"],
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "keywords": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        },
+        "language": {
+          "type": "string"
+        },
+        "source_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["entity_type", "entity_id"],
+          "properties": {
+            "entity_type": {
+              "type": "string",
+              "enum": ["chunk", "caption", "table", "figure", "page"]
+            },
+            "entity_id": {
+              "type": "string"
+            },
+            "page": {
+              "type": ["integer", "null"],
+              "minimum": 1
+            }
+          }
+        }
+      }
+    },
+    "embedding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["embedding_id", "provider", "model", "dimensions", "status"],
+      "properties": {
+        "embedding_id": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "dimensions": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": ["generated", "skipped", "failed"]
+        },
+        "error_code": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "filters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_type",
+        "document_type",
+        "confidence_band",
+        "schema_version",
+        "safety_labels"
+      ],
+      "properties": {
+        "source_type": {
+          "type": "string",
+          "enum": ["text", "document", "image"]
+        },
+        "document_type": {
+          "type": "string"
+        },
+        "confidence_band": {
+          "type": "string",
+          "enum": ["high", "medium", "low"]
+        },
+        "schema_version": {
+          "type": "string"
+        },
+        "ingested_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "safety_labels": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cir_uri", "raw_asset_uri", "extraction_bundle_uri"],
+      "properties": {
+        "cir_uri": {
+          "type": "string"
+        },
+        "raw_asset_uri": {
+          "type": "string"
+        },
+        "extraction_bundle_uri": {
+          "type": "string"
+        },
+        "derived_artifact_uri": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["confidence", "lineage_complete"],
+      "properties": {
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "lineage_complete": {
+          "type": "boolean"
+        },
+        "warnings": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        }
+      }
+    },
+    "timestamps": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["created_at", "indexed_at"],
+      "properties": {
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "indexed_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

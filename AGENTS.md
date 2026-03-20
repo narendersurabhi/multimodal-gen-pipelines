@@ -8,14 +8,22 @@ This repository stores architecture and supporting documentation for multimodal 
 - Added an implementation plan at `docs/multimodal-generation-pipelines-implementation-plan.md`.
 - Added a Phase 0 foundation brief at `docs/multimodal-generation-pipelines-phase-0-foundation.md` with prioritized MVP workflows, baseline service decisions, repository standards, and an exit checklist.
 - Added a Phase 1 ingestion and extraction implementation brief at `docs/multimodal-generation-pipelines-phase-1-ingestion-extraction.md` covering API scope, job lifecycle, extraction outputs, storage conventions, and Phase 2 hand-off expectations.
-- Added versioned schema contracts under `docs/schemas/` for the canonical intermediate representation, grounded summary outputs, processing jobs, and extraction bundles.
-- Added an OpenAPI contract at `docs/api/ingestion-and-processing.openapi.yaml` for upload, retry, status, and extraction artifact endpoints.
+- Added a Phase 2 CIR and indexing implementation brief at `docs/multimodal-generation-pipelines-phase-2-cir-indexing.md` covering CIR materialization, searchable units, embeddings, indexing runs, and Phase 3 hand-off expectations.
+- Added versioned schema contracts under `docs/schemas/` for the canonical intermediate representation, grounded summary outputs, processing jobs, extraction bundles, index records, and indexing runs.
+- Added OpenAPI contracts at `docs/api/ingestion-and-processing.openapi.yaml` and `docs/api/cir-and-indexing.openapi.yaml` for upload, retry, extraction artifacts, CIR materialization, indexing runs, and indexed record inspection.
 - Added a sample corpus inventory at `data/sample-corpora/README.md` to define the MVP evaluation dataset shape and coverage.
-- Expanded the lightweight validation script and GitHub Actions workflow to cover both Phase 0 and Phase 1 repository checks.
+- Expanded the lightweight validation script and GitHub Actions workflow to cover Phase 0, Phase 1, and Phase 2 repository checks.
 - Added a recruiter-friendly `README.md` for fast repository scanning and portfolio review.
-- The repository now includes implementation-ready contracts for ingestion and extraction, while still primarily focusing on system design documentation and delivery governance artifacts.
+- The repository now includes implementation-ready contracts for ingestion, CIR materialization, and indexing, while still primarily focusing on system design documentation and delivery governance artifacts.
 
 ## Change Log
+### 2026-03-20
+- Added `docs/multimodal-generation-pipelines-phase-2-cir-indexing.md` to implement the next roadmap phase with concrete CIR mapping, searchable-unit, embedding, and re-index guidance.
+- Added `docs/api/cir-and-indexing.openapi.yaml` to define Phase 2 administrative endpoints for CIR materialization, indexing runs, status, and indexed record inspection.
+- Added `docs/schemas/index-record.schema.json` and `docs/schemas/indexing-run.schema.json` to version searchable retrieval records and indexing/backfill job interfaces.
+- Updated `docs/schemas/cir.schema.json` to finalize the CIR as a Phase 2 system-of-record contract with lineage and artifact references.
+- Updated `scripts/validate_phase0.py` and `README.md` so repository validation and discovery now cover the new Phase 2 artifacts.
+
 ### 2026-03-20
 - Added `docs/multimodal-generation-pipelines-phase-1-ingestion-extraction.md` to implement the next roadmap phase with concrete ingestion, processing, storage, and observability guidance.
 - Added `docs/api/ingestion-and-processing.openapi.yaml` to define the MVP ingestion API, job status, retry, and extraction artifact contracts.
