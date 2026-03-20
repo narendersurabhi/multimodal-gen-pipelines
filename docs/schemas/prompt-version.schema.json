@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/prompt-version.schema.json",
+  "title": "Prompt Version",
+  "description": "Versioned prompt template contract for governed multimodal generation rollouts.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "prompt_version_id",
+    "task_type",
+    "version",
+    "status",
+    "messages",
+    "supported_modalities",
+    "owner"
+  ],
+  "properties": {
+    "prompt_version_id": {
+      "type": "string"
+    },
+    "task_type": {
+      "type": "string",
+      "enum": [
+        "grounded_summary",
+        "question_answering",
+        "risk_brief",
+        "creative_prompt"
+      ]
+    },
+    "version": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "approved",
+        "active",
+        "deprecated",
+        "retired"
+      ]
+    },
+    "messages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "role",
+          "content"
+        ],
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "system",
+              "developer",
+              "user"
+            ]
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "supported_modalities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "text",
+          "document",
+          "image",
+          "table"
+        ]
+      }
+    },
+    "output_schema_id": {
+      "type": "string"
+    },
+    "owner": {
+      "type": "string"
+    },
+    "approver": {
+      "type": "string"
+    },
+    "rollout": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "traffic_percentage": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "workflow_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "tenant_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        }
+      }
+    },
+    "citation_policy": {
+      "type": "string",
+      "enum": [
+        "required",
+        "optional",
+        "forbidden"
+      ]
+    },
+    "abstention_policy": {
+      "type": "string",
+      "enum": [
+        "allow",
+        "require_below_threshold",
+        "never"
+      ]
+    },
+    "evaluation_notes": {
+      "type": "string"
+    },
+    "rollback_of": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "approved_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

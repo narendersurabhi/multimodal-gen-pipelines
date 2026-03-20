@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/review-queue-item.schema.json",
+  "title": "Review Queue Item",
+  "description": "Human review workflow record for low-confidence or policy-sensitive multimodal outputs.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "review_item_id",
+    "queue_name",
+    "status",
+    "summary_request_id",
+    "reason",
+    "severity",
+    "created_at"
+  ],
+  "properties": {
+    "review_item_id": {
+      "type": "string"
+    },
+    "queue_name": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in_review",
+        "approved",
+        "approved_with_edits",
+        "rejected",
+        "escalated",
+        "redaction_required",
+        "closed"
+      ]
+    },
+    "summary_request_id": {
+      "type": "string"
+    },
+    "asset_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "prompt_version_id": {
+      "type": "string"
+    },
+    "routing_policy_id": {
+      "type": "string"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "policy_labels": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "evidence_snapshot_uri": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "sla_due_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "decision_history": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decision"
+      },
+      "default": []
+    }
+  },
+  "$defs": {
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision",
+        "reviewer_id",
+        "timestamp"
+      ],
+      "properties": {
+        "decision": {
+          "type": "string",
+          "enum": [
+            "approved",
+            "approved_with_edits",
+            "rejected",
+            "escalated",
+            "redaction_required"
+          ]
+        },
+        "reviewer_id": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

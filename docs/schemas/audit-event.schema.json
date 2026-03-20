@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/audit-event.schema.json",
+  "title": "Audit Event",
+  "description": "Immutable audit record for control-plane, reviewer, and sensitive content access actions.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "audit_event_id",
+    "event_type",
+    "actor_id",
+    "actor_type",
+    "timestamp",
+    "resource_type",
+    "resource_id"
+  ],
+  "properties": {
+    "audit_event_id": {
+      "type": "string"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "prompt_version_created",
+        "prompt_version_approved",
+        "prompt_version_activated",
+        "routing_policy_updated",
+        "review_item_decided",
+        "evidence_accessed",
+        "summary_accessed",
+        "redaction_override",
+        "alert_threshold_changed"
+      ]
+    },
+    "actor_id": {
+      "type": "string"
+    },
+    "actor_type": {
+      "type": "string",
+      "enum": [
+        "user",
+        "service",
+        "reviewer",
+        "administrator"
+      ]
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "resource_type": {
+      "type": "string",
+      "enum": [
+        "prompt_version",
+        "routing_policy",
+        "review_item",
+        "retrieval_evidence_pack",
+        "grounded_summary",
+        "redaction_policy"
+      ]
+    },
+    "resource_id": {
+      "type": "string"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "summary_request_id": {
+      "type": "string"
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "succeeded",
+        "failed",
+        "denied"
+      ]
+    },
+    "redaction_applied": {
+      "type": "boolean"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "string",
+          "number",
+          "boolean"
+        ]
+      },
+      "default": {}
+    }
+  }
+}
