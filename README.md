@@ -11,13 +11,6 @@
 - Structured generation patterns for summaries, JSON outputs, and downstream automation
 - Tradeoff analysis across quality, latency, cost, and controllability
 
-**Best fit for recruiters hiring for**
-- Applied AI / LLM Engineer
-- ML Engineer
-- AI Solutions Architect
-- GenAI Platform Engineer
-- Document AI / Multimodal AI roles
-
 ## Project Summary
 
 This repository documents how to build a **multimodal generation platform** that can:
