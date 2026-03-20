@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/retrieval-evidence-pack.schema.json",
+  "title": "Retrieval Evidence Pack",
+  "description": "Normalized retrieval evidence package for prompt assembly and grounded output inspection.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "summary_request_id",
+    "tenant_id",
+    "query",
+    "search_mode",
+    "evidence"
+  ],
+  "properties": {
+    "summary_request_id": {
+      "type": "string"
+    },
+    "tenant_id": {
+      "type": "string"
+    },
+    "query": {
+      "type": "string"
+    },
+    "search_mode": {
+      "type": "string",
+      "enum": ["vector", "keyword", "hybrid"]
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/evidenceItem"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    }
+  },
+  "$defs": {
+    "evidenceItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "citation_id",
+        "record_id",
+        "asset_id",
+        "content_type",
+        "evidence_type",
+        "locator",
+        "evidence_text",
+        "retrieval_score",
+        "lineage"
+      ],
+      "properties": {
+        "citation_id": {
+          "type": "string"
+        },
+        "record_id": {
+          "type": "string"
+        },
+        "asset_id": {
+          "type": "string"
+        },
+        "content_type": {
+          "type": "string",
+          "enum": ["text_chunk", "caption", "table_summary", "figure_description", "page_summary"]
+        },
+        "evidence_type": {
+          "type": "string",
+          "enum": ["chunk", "table", "figure", "caption", "page_summary"]
+        },
+        "locator": {
+          "type": "string"
+        },
+        "evidence_text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "retrieval_score": {
+          "type": "number"
+        },
+        "rerank_score": {
+          "type": "number"
+        },
+        "confidence_band": {
+          "type": "string",
+          "enum": ["high", "medium", "low"]
+        },
+        "lineage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["cir_uri"],
+          "properties": {
+            "cir_uri": {
+              "type": "string"
+            },
+            "chunk_id": {
+              "type": "string"
+            },
+            "table_id": {
+              "type": "string"
+            },
+            "figure_id": {
+              "type": "string"
+            },
+            "caption_id": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

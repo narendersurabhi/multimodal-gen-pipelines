@@ -1,0 +1,209 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/retrieval-request.schema.json",
+  "title": "Retrieval Request",
+  "description": "Request contract for retrieval-grounded multimodal generation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "tenant_id",
+    "task_type",
+    "query",
+    "scope",
+    "retrieval",
+    "output"
+  ],
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "task_type": {
+      "type": "string",
+      "enum": [
+        "grounded_summary",
+        "question_answering",
+        "risk_brief"
+      ]
+    },
+    "query": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scope": {
+      "$ref": "#/$defs/scope"
+    },
+    "retrieval": {
+      "$ref": "#/$defs/retrieval"
+    },
+    "output": {
+      "$ref": "#/$defs/output"
+    },
+    "request_metadata": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "default": {}
+    },
+    "client_request_id": {
+      "type": "string",
+      "description": "Optional caller-provided identifier for idempotency or tracing."
+    }
+  },
+  "$defs": {
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "asset_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "document_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "minItems": 1
+        },
+        "languages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "confidence_bands": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "default": [
+            "high",
+            "medium"
+          ]
+        },
+        "time_range": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "start",
+            "end"
+          ],
+          "properties": {
+            "start": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "end": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "asset_ids"
+          ]
+        },
+        {
+          "required": [
+            "document_types"
+          ]
+        }
+      ]
+    },
+    "retrieval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "top_k",
+        "search_mode"
+      ],
+      "properties": {
+        "top_k": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 25
+        },
+        "search_mode": {
+          "type": "string",
+          "enum": [
+            "vector",
+            "keyword",
+            "hybrid"
+          ]
+        },
+        "modality_preference": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "text",
+              "document",
+              "image",
+              "table"
+            ]
+          },
+          "default": []
+        },
+        "include_low_confidence": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_evidence_tokens": {
+          "type": "integer",
+          "minimum": 128,
+          "maximum": 12000,
+          "default": 2500
+        },
+        "rerank": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_id",
+        "schema_version"
+      ],
+      "properties": {
+        "schema_id": {
+          "type": "string",
+          "const": "grounded_summary"
+        },
+        "schema_version": {
+          "type": "string"
+        },
+        "max_summary_tokens": {
+          "type": "integer",
+          "minimum": 64,
+          "maximum": 4000,
+          "default": 900
+        },
+        "require_citations": {
+          "type": "boolean",
+          "default": true
+        },
+        "abstain_on_low_evidence": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    }
+  }
+}

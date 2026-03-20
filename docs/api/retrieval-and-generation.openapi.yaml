@@ -1,0 +1,121 @@
+openapi: 3.1.0
+info:
+  title: Retrieval and Grounded Generation API
+  version: 1.0.0
+  description: >-
+    User-facing API surface for Phase 3 retrieval-backed summarization,
+    evidence inspection, and grounded output retrieval.
+servers:
+  - url: https://api.example.com
+paths:
+  /v1/grounded-summaries:
+    post:
+      summary: Create a grounded summary request.
+      operationId: createGroundedSummary
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RetrievalRequest'
+      responses:
+        '202':
+          description: Grounded summary request accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroundedSummaryAccepted'
+  /v1/grounded-summaries/{summary_request_id}:
+    get:
+      summary: Fetch summary request status and grounded output.
+      operationId: getGroundedSummary
+      parameters:
+        - $ref: '#/components/parameters/SummaryRequestId'
+      responses:
+        '200':
+          description: Summary request returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroundedSummaryEnvelope'
+  /v1/grounded-summaries/{summary_request_id}/evidence:
+    get:
+      summary: Fetch the normalized evidence pack for a grounded summary request.
+      operationId: getGroundedSummaryEvidence
+      parameters:
+        - $ref: '#/components/parameters/SummaryRequestId'
+      responses:
+        '200':
+          description: Evidence pack returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetrievalEvidencePack'
+components:
+  parameters:
+    SummaryRequestId:
+      name: summary_request_id
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '^gsr_[a-zA-Z0-9]+$'
+  schemas:
+    RetrievalRequest:
+      $ref: '../schemas/retrieval-request.schema.json'
+    RetrievalEvidencePack:
+      $ref: '../schemas/retrieval-evidence-pack.schema.json'
+    GroundedSummary:
+      $ref: '../schemas/grounded-summary.schema.json'
+    GroundedSummaryAccepted:
+      type: object
+      additionalProperties: false
+      required:
+        - summary_request_id
+        - status
+      properties:
+        summary_request_id:
+          type: string
+        status:
+          type: string
+          enum: [queued]
+        links:
+          type: object
+          additionalProperties: false
+          required:
+            - summary
+            - evidence
+          properties:
+            summary:
+              type: string
+              format: uri-reference
+            evidence:
+              type: string
+              format: uri-reference
+    GroundedSummaryEnvelope:
+      type: object
+      additionalProperties: false
+      required:
+        - summary_request_id
+        - status
+      properties:
+        summary_request_id:
+          type: string
+        status:
+          type: string
+          enum: [queued, retrieving, generating, validating, succeeded, partial_success, failed]
+        submitted_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+        warnings:
+          type: array
+          items:
+            type: string
+          default: []
+        retrieval_request:
+          $ref: '../schemas/retrieval-request.schema.json'
+        output:
+          $ref: '../schemas/grounded-summary.schema.json'
