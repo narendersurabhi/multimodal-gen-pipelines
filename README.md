@@ -38,6 +38,9 @@ Modern AI products increasingly need to work across multiple content types inste
 | `README.md` | Recruiter-friendly overview of the project |
 | `docs/multimodal-generation-pipelines-architecture.md` | Full architecture reference with components, flows, deployment, and tradeoffs |
 | `docs/multimodal-generation-pipelines-implementation-plan.md` | Phased implementation roadmap with MVP scope, milestones, risks, and success metrics |
+| `docs/multimodal-generation-pipelines-phase-0-foundation.md` | Concrete Phase 0 deliverables covering MVP workflows, dataset definition, schemas, and repository standards |
+| `docs/schemas/` | Versioned JSON schema contracts for the CIR and grounded summary outputs |
+| `data/sample-corpora/README.md` | Sample dataset inventory and evaluation coverage for the MVP corpus |
 | `AGENTS.md` | Repository context and running change log for future contributors/agents |
 
 ## Architecture Highlights
@@ -84,6 +87,8 @@ The implementation plan breaks delivery into clear phases:
 4. **Retrieval-grounded generation** — summaries and structured outputs
 5. **Operational hardening** — dashboards, controls, risk handling, and SLAs
 6. **Advanced multimodal workflows** — creative generation and richer retrieval experiences
+
+Phase 0 is now represented directly in the repository through a foundation brief, schema definitions, a sample-corpus inventory, and a lightweight validation workflow.
 
 ## Suggested Reading Order
 

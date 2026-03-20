@@ -1,0 +1,227 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/cir.schema.json",
+  "title": "Canonical Intermediate Representation",
+  "description": "Versioned multimodal extraction contract for text, document, and image assets.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "asset_id",
+    "source_type",
+    "ingestion",
+    "content",
+    "provenance",
+    "quality_scores",
+    "timestamps"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "asset_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_type": {
+      "type": "string",
+      "enum": ["text", "document", "image"]
+    },
+    "tenant_id": {
+      "type": "string"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "ingestion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_uri", "mime_type", "checksum_sha256"],
+      "properties": {
+        "source_uri": { "type": "string" },
+        "mime_type": { "type": "string" },
+        "checksum_sha256": { "type": "string" },
+        "language": { "type": "string" },
+        "page_count": { "type": "integer", "minimum": 0 },
+        "file_size_bytes": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "content": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["raw_text", "normalized_text", "chunks"],
+      "properties": {
+        "raw_text": { "type": "string" },
+        "normalized_text": { "type": "string" },
+        "chunks": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/chunk" }
+        },
+        "tables": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/table" },
+          "default": []
+        },
+        "figures": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/figure" },
+          "default": []
+        },
+        "captions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/caption" },
+          "default": []
+        },
+        "entities": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/entity" },
+          "default": []
+        },
+        "safety_labels": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pipeline_run_id", "processor_versions"],
+      "properties": {
+        "pipeline_run_id": { "type": "string" },
+        "processor_versions": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "source_system": { "type": "string" },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        }
+      }
+    },
+    "quality_scores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["overall_confidence"],
+      "properties": {
+        "overall_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "ocr_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "caption_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "timestamps": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ingested_at", "processed_at"],
+      "properties": {
+        "ingested_at": { "type": "string", "format": "date-time" },
+        "processed_at": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "$defs": {
+    "span": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["page", "start_offset", "end_offset"],
+      "properties": {
+        "page": { "type": "integer", "minimum": 1 },
+        "start_offset": { "type": "integer", "minimum": 0 },
+        "end_offset": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "chunk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["chunk_id", "text", "span"],
+      "properties": {
+        "chunk_id": { "type": "string" },
+        "text": { "type": "string" },
+        "span": { "$ref": "#/$defs/span" },
+        "embedding_ref": { "type": "string" },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": ["string", "number", "boolean"]
+          },
+          "default": {}
+        }
+      }
+    },
+    "table": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["table_id", "page", "data"],
+      "properties": {
+        "table_id": { "type": "string" },
+        "page": { "type": "integer", "minimum": 1 },
+        "title": { "type": "string" },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": { "type": ["string", "number", "boolean", "null"] }
+          }
+        }
+      }
+    },
+    "figure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["figure_id", "page"],
+      "properties": {
+        "figure_id": { "type": "string" },
+        "page": { "type": "integer", "minimum": 1 },
+        "label": { "type": "string" },
+        "image_ref": { "type": "string" }
+      }
+    },
+    "caption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["caption_id", "text"],
+      "properties": {
+        "caption_id": { "type": "string" },
+        "figure_id": { "type": "string" },
+        "text": { "type": "string" },
+        "embedding_ref": { "type": "string" },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entity_id", "label", "text"],
+      "properties": {
+        "entity_id": { "type": "string" },
+        "label": { "type": "string" },
+        "text": { "type": "string" },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    }
+  }
+}
