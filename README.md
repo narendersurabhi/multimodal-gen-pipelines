@@ -42,10 +42,12 @@ Modern AI products increasingly need to work across multiple content types inste
 | `docs/multimodal-generation-pipelines-phase-1-ingestion-extraction.md` | Phase 1 implementation brief covering ingestion APIs, job lifecycle, extraction outputs, and storage conventions |
 | `docs/multimodal-generation-pipelines-phase-2-cir-indexing.md` | Phase 2 implementation brief covering CIR materialization, embeddings, indexing runs, and backfill conventions |
 | `docs/multimodal-generation-pipelines-phase-3-retrieval-grounded-generation.md` | Phase 3 implementation brief covering retrieval orchestration, evidence packs, grounded summaries, and citation guardrails |
+| `docs/multimodal-generation-pipelines-phase-4-quality-controls-operations.md` | Phase 4 implementation brief covering observability, prompt/model controls, review workflows, and pilot-readiness operations |
 | `docs/api/ingestion-and-processing.openapi.yaml` | OpenAPI contract for upload, job status, retry, and extraction artifact endpoints |
 | `docs/api/cir-and-indexing.openapi.yaml` | Administrative OpenAPI contract for CIR materialization, indexing runs, and indexed record inspection |
 | `docs/api/retrieval-and-generation.openapi.yaml` | User-facing OpenAPI contract for grounded summary creation, status retrieval, and evidence inspection |
-| `docs/schemas/` | Versioned JSON schema contracts for the CIR, grounded summary outputs, jobs, extraction bundles, index records, indexing runs, retrieval requests, and evidence packs |
+| `docs/api/quality-and-operations.openapi.yaml` | Administrative OpenAPI contract for prompt versions, routing policies, review workflows, and audit-event access |
+| `docs/schemas/` | Versioned JSON schema contracts for the CIR, grounded summary outputs, jobs, extraction bundles, index records, indexing runs, retrieval requests, evidence packs, prompt versions, routing policies, review queues, and audit logs |
 | `data/sample-corpora/README.md` | Sample dataset inventory and evaluation coverage for the MVP corpus |
 | `AGENTS.md` | Repository context and running change log for future contributors/agents |
 
@@ -94,7 +96,7 @@ The implementation plan breaks delivery into clear phases:
 5. **Operational hardening** — dashboards, controls, risk handling, and SLAs
 6. **Advanced multimodal workflows** — creative generation and richer retrieval experiences
 
-Phase 0 is now represented directly in the repository through a foundation brief, schema definitions, a sample-corpus inventory, and a lightweight validation workflow. Phase 1 is now scaffolded through a concrete ingestion/extraction implementation brief, an OpenAPI contract, and versioned job/extraction schemas. Phase 2 is now documented through a CIR/indexing implementation brief, an administrative OpenAPI contract, and versioned index/search contracts for embeddings and backfills. Phase 3 is now documented through a retrieval-grounded generation implementation brief, a user-facing OpenAPI contract, and versioned request/evidence contracts for grounded outputs.
+Phase 0 is now represented directly in the repository through a foundation brief, schema definitions, a sample-corpus inventory, and a lightweight validation workflow. Phase 1 is now scaffolded through a concrete ingestion/extraction implementation brief, an OpenAPI contract, and versioned job/extraction schemas. Phase 2 is now documented through a CIR/indexing implementation brief, an administrative OpenAPI contract, and versioned index/search contracts for embeddings and backfills. Phase 3 is now documented through a retrieval-grounded generation implementation brief, a user-facing OpenAPI contract, and versioned request/evidence contracts for grounded outputs. Phase 4 is now specified through an operational-hardening brief, an admin control-plane OpenAPI contract, and governed schema contracts for prompt rollouts, routing policies, review queues, and audit trails.
 
 ## Suggested Reading Order
 
@@ -102,5 +104,5 @@ If you are reviewing this repository quickly:
 1. Start with this `README.md`
 2. Open `docs/multimodal-generation-pipelines-architecture.md`
 3. Review `docs/multimodal-generation-pipelines-implementation-plan.md`
-4. Read `docs/multimodal-generation-pipelines-phase-0-foundation.md`, `docs/multimodal-generation-pipelines-phase-1-ingestion-extraction.md`, `docs/multimodal-generation-pipelines-phase-2-cir-indexing.md`, and `docs/multimodal-generation-pipelines-phase-3-retrieval-grounded-generation.md` for delivery-ready artifacts
+4. Read `docs/multimodal-generation-pipelines-phase-0-foundation.md`, `docs/multimodal-generation-pipelines-phase-1-ingestion-extraction.md`, `docs/multimodal-generation-pipelines-phase-2-cir-indexing.md`, `docs/multimodal-generation-pipelines-phase-3-retrieval-grounded-generation.md`, and `docs/multimodal-generation-pipelines-phase-4-quality-controls-operations.md` for delivery-ready artifacts
 5. Check `AGENTS.md` for the latest repository status

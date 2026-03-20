@@ -15,9 +15,19 @@ This repository stores architecture and supporting documentation for multimodal 
 - Expanded the lightweight validation script and GitHub Actions workflow to cover Phase 0 through Phase 3 repository checks.
 - Added a recruiter-friendly `README.md` for fast repository scanning and portfolio review.
 - Added a Phase 3 retrieval-grounded generation brief at `docs/multimodal-generation-pipelines-phase-3-retrieval-grounded-generation.md` covering query APIs, evidence packs, grounded summaries, citations, and guardrails.
-- The repository now includes implementation-ready contracts for ingestion, CIR materialization, indexing, and grounded generation, while still primarily focusing on system design documentation and delivery governance artifacts.
+- Added a Phase 4 quality, controls, and operations implementation brief at `docs/multimodal-generation-pipelines-phase-4-quality-controls-operations.md` covering dashboards, prompt/model controls, review workflows, audit logging, redaction, and pilot SLO guidance.
+- Added versioned operational control schemas under `docs/schemas/` for prompt versions, model routing policies, review queue items, and audit events.
+- Added an operations control-plane OpenAPI contract at `docs/api/quality-and-operations.openapi.yaml` for prompt activation, routing policy management, review decisions, and audit-event search.
+- Expanded the lightweight validation script and repository overview to cover Phase 0 through Phase 4 repository checks and discovery.
+- The repository now includes implementation-ready contracts for ingestion, CIR materialization, indexing, grounded generation, and operational hardening, while still primarily focusing on system design documentation and delivery governance artifacts.
 
 ## Change Log
+### 2026-03-20
+- Added `docs/multimodal-generation-pipelines-phase-4-quality-controls-operations.md` to implement the next roadmap phase with concrete observability, prompt/routing governance, review, and audit-control guidance.
+- Added `docs/api/quality-and-operations.openapi.yaml` to define Phase 4 administrative endpoints for prompt versions, model routing policies, review queue operations, and audit-event access.
+- Added `docs/schemas/prompt-version.schema.json`, `docs/schemas/model-routing-policy.schema.json`, `docs/schemas/review-queue-item.schema.json`, and `docs/schemas/audit-event.schema.json` to version control-plane and review-workflow contracts.
+- Updated `scripts/validate_phase0.py` and `README.md` so repository validation and discovery now cover the new Phase 4 artifacts.
+
 ### 2026-03-20
 - Added `docs/multimodal-generation-pipelines-phase-3-retrieval-grounded-generation.md` to implement the next roadmap phase with concrete retrieval orchestration, evidence-pack, grounding, and citation guidance.
 - Added `docs/api/retrieval-and-generation.openapi.yaml` to define Phase 3 user-facing endpoints for grounded summary creation, status retrieval, and evidence inspection.

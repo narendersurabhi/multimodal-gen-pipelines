@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/model-routing-policy.schema.json",
+  "title": "Model Routing Policy",
+  "description": "Governed routing policy for primary, fallback, and abstention behavior in multimodal generation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "routing_policy_id",
+    "task_type",
+    "status",
+    "primary_target",
+    "fallback_targets"
+  ],
+  "properties": {
+    "routing_policy_id": {
+      "type": "string"
+    },
+    "task_type": {
+      "type": "string",
+      "enum": [
+        "grounded_summary",
+        "question_answering",
+        "risk_brief",
+        "creative_prompt"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "deprecated"
+      ]
+    },
+    "prompt_version_id": {
+      "type": "string"
+    },
+    "primary_target": {
+      "$ref": "#/$defs/modelTarget"
+    },
+    "fallback_targets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/modelTarget"
+      }
+    },
+    "abstain_when": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "min_grounding_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "min_evidence_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "policy_labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        }
+      }
+    },
+    "review_queue_on_abstain": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "$defs": {
+    "modelTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "model",
+        "timeout_ms",
+        "max_retries"
+      ],
+      "properties": {
+        "provider": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "timeout_ms": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_retries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "activation_condition": {
+          "type": "string",
+          "description": "Human-readable trigger such as provider_error, p95_latency_breach, or policy_sensitive."
+        },
+        "budget_tier": {
+          "type": "string",
+          "enum": [
+            "economy",
+            "standard",
+            "premium"
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lightweight repository validation for Phase 0 through Phase 3 artifacts."""
+"""Lightweight repository validation for Phase 0 through Phase 4 artifacts."""
 
 from __future__ import annotations
 
@@ -11,9 +11,11 @@ REQUIRED_FILES = [
     Path("docs/multimodal-generation-pipelines-phase-1-ingestion-extraction.md"),
     Path("docs/multimodal-generation-pipelines-phase-2-cir-indexing.md"),
     Path("docs/multimodal-generation-pipelines-phase-3-retrieval-grounded-generation.md"),
+    Path("docs/multimodal-generation-pipelines-phase-4-quality-controls-operations.md"),
     Path("docs/api/ingestion-and-processing.openapi.yaml"),
     Path("docs/api/cir-and-indexing.openapi.yaml"),
     Path("docs/api/retrieval-and-generation.openapi.yaml"),
+    Path("docs/api/quality-and-operations.openapi.yaml"),
     Path("docs/schemas/cir.schema.json"),
     Path("docs/schemas/grounded-summary.schema.json"),
     Path("docs/schemas/processing-job.schema.json"),
@@ -22,6 +24,10 @@ REQUIRED_FILES = [
     Path("docs/schemas/indexing-run.schema.json"),
     Path("docs/schemas/retrieval-request.schema.json"),
     Path("docs/schemas/retrieval-evidence-pack.schema.json"),
+    Path("docs/schemas/prompt-version.schema.json"),
+    Path("docs/schemas/model-routing-policy.schema.json"),
+    Path("docs/schemas/review-queue-item.schema.json"),
+    Path("docs/schemas/audit-event.schema.json"),
     Path("data/sample-corpora/README.md"),
     Path("AGENTS.md"),
 ]
@@ -35,6 +41,10 @@ JSON_FILES = [
     Path("docs/schemas/indexing-run.schema.json"),
     Path("docs/schemas/retrieval-request.schema.json"),
     Path("docs/schemas/retrieval-evidence-pack.schema.json"),
+    Path("docs/schemas/prompt-version.schema.json"),
+    Path("docs/schemas/model-routing-policy.schema.json"),
+    Path("docs/schemas/review-queue-item.schema.json"),
+    Path("docs/schemas/audit-event.schema.json"),
 ]
 
 OPENAPI_MARKERS = {
@@ -58,6 +68,15 @@ OPENAPI_MARKERS = {
         "/v1/grounded-summaries:",
         "/v1/grounded-summaries/{summary_request_id}:",
         "/v1/grounded-summaries/{summary_request_id}/evidence:",
+    ],
+    Path("docs/api/quality-and-operations.openapi.yaml"): [
+        "openapi: 3.1.0",
+        "/v1/prompt-versions:",
+        "/v1/prompt-versions/{prompt_version_id}:activate:",
+        "/v1/model-routing-policies:",
+        "/v1/review-queues/{queue_name}/items:",
+        "/v1/review-items/{review_item_id}:decision:",
+        "/v1/audit-events:",
     ],
 }
 
@@ -85,7 +104,7 @@ def main() -> int:
             return 1
         print(f"Validated OpenAPI contract markers: {openapi_path}")
 
-    print("Phase 0 through Phase 3 validation checks passed.")
+    print("Phase 0 through Phase 4 validation checks passed.")
     return 0
 
 
