@@ -1,0 +1,354 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/extraction-bundle.schema.json",
+  "title": "Extraction Bundle",
+  "description": "Normalized Phase 1 extraction output prior to CIR mapping.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "bundle_version",
+    "asset",
+    "document_structure",
+    "vision_outputs",
+    "text_chunks",
+    "quality"
+  ],
+  "properties": {
+    "bundle_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "asset_id",
+        "tenant_id",
+        "source_type",
+        "mime_type",
+        "sha256",
+        "storage_uri"
+      ],
+      "properties": {
+        "asset_id": {
+          "type": "string",
+          "pattern": "^asset_[A-Za-z0-9]+$"
+        },
+        "tenant_id": {
+          "type": "string"
+        },
+        "source_type": {
+          "type": "string",
+          "enum": ["inline_text", "file_upload", "external_uri"]
+        },
+        "mime_type": {
+          "type": "string"
+        },
+        "file_name": {
+          "type": ["string", "null"]
+        },
+        "size_bytes": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "storage_uri": {
+          "type": "string"
+        },
+        "derived_uris": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "document_structure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pages", "tables", "figures", "ocr_spans", "layout_blocks"],
+      "properties": {
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["page_number", "width", "height"],
+            "properties": {
+              "page_number": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "width": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "height": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "image_uri": {
+                "type": ["string", "null"]
+              }
+            }
+          }
+        },
+        "tables": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/regionArtifact"
+          }
+        },
+        "figures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/regionArtifact"
+          }
+        },
+        "ocr_spans": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/textSpan"
+          }
+        },
+        "layout_blocks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/layoutBlock"
+          }
+        }
+      }
+    },
+    "vision_outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["captions", "tags", "visible_text", "safety_annotations"],
+      "properties": {
+        "captions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["text", "provider", "confidence"],
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "provider": {
+                "type": "string"
+              },
+              "confidence": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "source_page": {
+                "type": ["integer", "null"],
+                "minimum": 1
+              }
+            }
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "visible_text": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/textSpan"
+          }
+        },
+        "safety_annotations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["label", "severity"],
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "severity": {
+                "type": "string",
+                "enum": ["low", "medium", "high"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "text_chunks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["chunk_id", "text", "language", "provenance"],
+        "properties": {
+          "chunk_id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "provenance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["source", "page_number"],
+            "properties": {
+              "source": {
+                "type": "string",
+                "enum": ["raw_text", "ocr", "caption", "layout_block"]
+              },
+              "page_number": {
+                "type": ["integer", "null"],
+                "minimum": 1
+              },
+              "char_start": {
+                "type": ["integer", "null"],
+                "minimum": 0
+              },
+              "char_end": {
+                "type": ["integer", "null"],
+                "minimum": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["overall_status", "warnings", "confidence"],
+      "properties": {
+        "overall_status": {
+          "type": "string",
+          "enum": ["succeeded", "partial_success", "failed"]
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    }
+  },
+  "$defs": {
+    "boundingBox": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y", "width", "height"],
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "width": {
+          "type": "number",
+          "minimum": 0
+        },
+        "height": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "regionArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "page_number", "bounding_box"],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "page_number": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "bounding_box": {
+          "$ref": "#/$defs/boundingBox"
+        },
+        "text": {
+          "type": ["string", "null"]
+        },
+        "image_uri": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "textSpan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "confidence"],
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "page_number": {
+          "type": ["integer", "null"],
+          "minimum": 1
+        },
+        "bounding_box": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/boundingBox"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "layoutBlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["block_type", "text", "page_number"],
+      "properties": {
+        "block_type": {
+          "type": "string",
+          "enum": ["title", "paragraph", "list", "table", "figure", "footer", "header"]
+        },
+        "text": {
+          "type": "string"
+        },
+        "page_number": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "bounding_box": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/boundingBox"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
